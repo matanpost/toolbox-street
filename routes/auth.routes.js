@@ -37,20 +37,19 @@ try {
     
     //Checking the password
     if (bcrypt.compareSync(req.body.password, currentUser.passwordHash)) {
-        res.status(200).json({ message: "User details match" })
-    } else {
-        res.status(403).json({ message: "Password is incorrect" })
-    }
-
-    // Generating the JWT
-    const token = jwt.sign({
+        // Generating the JWT
+        const token = jwt.sign({
         exp: Math.floor(Date.now() / 1000) + (60 * 60),
         data: {user: {username: currentUser.username }}
-    }, 
-    process.env.TOKEN_SECRET
-    )
+        }, 
+        process.env.TOKEN_SECRET
+        )
+        res.json({ token })
+    } else {
+        res.status(403).json({ message: "Password is incorrect" })
+        return 
+    }
 
-    res.json({ token })
 
  } else {
     res.status(404).json({ message: "User was not found" })
